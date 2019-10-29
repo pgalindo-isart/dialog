@@ -11,7 +11,7 @@ RendererSDL::RendererSDL(SDL_Renderer& renderer)
 
 TextureId RendererSDL::CreateTexture(const char* filename)
 {
-	fprintf(stderr, "Not implemented: Cannot create texture %s\n", filename);
+    fprintf(stderr, "Not implemented: Cannot create texture %s\n", filename);
     return -1;
 }
 
@@ -21,7 +21,7 @@ TextureId RendererSDL::CreateTexture(int width, int height, unsigned char* pixel
     SDL_UpdateTexture(texture, nullptr, pixels, width * sizeof(uint32_t));
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-	printf("Texture created: %dx%d\n", width, height);
+    printf("Texture created: %dx%d\n", width, height);
     this->textures.push_back(texture);
 
     return (int)(this->textures.size() - 1);
@@ -35,12 +35,12 @@ void RendererSDL::RenderLine(float x0, float y0, float x1, float y1, color_t col
 
 void RendererSDL::RenderTexture(TextureId textureId, irect_t srcRect, rect_t dstRect, color_t color)
 {
-	if (textureId == -1)
-		return;
+    if (textureId == -1)
+        return;
 
     // TODO: Remove hardcoded values
-	if (!dstRect.intersects(rect_t{0, 0, 1280, 720}))
-		return;
+    if (!dstRect.intersects(rect_t{0, 0, 1280, 720}))
+        return;
 
     SDL_Texture* texture = this->textures[textureId];
 

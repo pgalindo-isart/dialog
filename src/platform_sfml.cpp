@@ -5,7 +5,7 @@ Platform::Platform(const char* windowTitle, int width, int height)
     : window(sf::VideoMode(width, height), windowTitle, sf::Style::Titlebar | sf::Style::Close)
     , renderer(window)
 {
-	window.setVerticalSyncEnabled(true);
+    window.setVerticalSyncEnabled(true);
 }
 
 void Platform::startFrame()

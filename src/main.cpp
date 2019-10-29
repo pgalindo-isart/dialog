@@ -20,52 +20,52 @@ void animatedDialog(Renderer& renderer, Gui& gui, const char* text, float advanc
 // advance: value between 0.0 and 1.0
 void myAnimatedDialog(Renderer& renderer, Gui& gui, const char* text, float advance)
 {
-	const Font& font = gui.UIFont();
+    const Font& font = gui.UIFont();
 
     // Background coords
-	float boxWidth  = 820.f;
-	float boxHeight = 165.f;
-	float x = (1280 - boxWidth) / 2.f;
-	float y = (720 - boxHeight) / 2.f;
+    float boxWidth  = 820.f;
+    float boxHeight = 165.f;
+    float x = (1280 - boxWidth) / 2.f;
+    float y = (720 - boxHeight) / 2.f;
 
-	// Render background
-	{
-		float bgAlpha = 0.8f;
-		rect_t bg = { x, y, boxWidth, boxHeight };
-		color_t bgColor = PAL[PAL_COLOR_30];
-		bgColor.a = (u8)(bgAlpha * 0xff);
-		gui.DrawFilledRect(bg, bgColor);
-	}
+    // Render background
+    {
+        float bgAlpha = 0.8f;
+        rect_t bg = { x, y, boxWidth, boxHeight };
+        color_t bgColor = PAL[PAL_COLOR_30];
+        bgColor.a = (u8)(bgAlpha * 0xff);
+        gui.DrawFilledRect(bg, bgColor);
+    }
 
-	// Render text
-	{
-		float lineSpacingScale = 1.25f;
+    // Render text
+    {
+        float lineSpacingScale = 1.25f;
 
         // Start position
-		float startX = x + 10.f;
-		float startY = y + 28.f;
+        float startX = x + 10.f;
+        float startY = y + 28.f;
 
         // AdvanceY is the length to advance for each new line
-		float advanceY = (font.ascent - font.descent + font.lineGap) * font.scale * lineSpacingScale;
+        float advanceY = (font.ascent - font.descent + font.lineGap) * font.scale * lineSpacingScale;
 
         // Position of the baseline
         // It is updated each time a glyph is drawn
-		float penX = startX;
-		float penY = startY;
+        float penX = startX;
+        float penY = startY;
 
         // Cursor that point to the character to display
-		const char* cursor = text;
-		while (*cursor != '\0')
-		{
-			int32_t charCode = (unsigned char)*cursor;
-			switch (charCode)
-			{
-			case '\n':
-				penX = startX;
-				penY += advanceY;
-				break;
+        const char* cursor = text;
+        while (*cursor != '\0')
+        {
+            int32_t charCode = (unsigned char)*cursor;
+            switch (charCode)
+            {
+            case '\n':
+                penX = startX;
+                penY += advanceY;
+                break;
 
-			default:
+            default:
                 {
                     // Get glyph position and texture coords
                     irect_t src;
@@ -112,11 +112,11 @@ void myAnimatedDialog(Renderer& renderer, Gui& gui, const char* text, float adva
                     if (cursor[1] != '\0')
                         penX += font.scale * font.GetKerningAdvance(cursor[0], cursor[1]);
                 }
-			}
+            }
 
-			cursor++;
-		}
-	}
+            cursor++;
+        }
+    }
 }
 
 int main(int argc, char* argv[])
