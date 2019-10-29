@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "name": "SDL",
+            "defines": [ "PLATFORM_SDL"]
+        },
+        {
+            "name": "SFML",
+            "includePath": [ "/usr/include", "~/user-sysroot/include/" ],
+            "defines": [ "PLATFORM_SFML"]
+        }
+    ],
+    "version": 4
+}
