@@ -12,7 +12,7 @@
 #include "gui.hpp"     // Gui functions
 #include "maths.hpp"   // Math functions
 
-// Reference fonction, to duplicate
+// Reference function, to duplicate
 void animatedDialog(Renderer& renderer, Gui& gui, const char* text, float advance);
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! FUNCTION TO IMPLEMENT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
