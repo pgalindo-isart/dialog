@@ -117,7 +117,7 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 
     // Render cursor
     rect_t cursor;
-    cursor.x = f32_lerp(bg.x + cursor_margin, bg.x + bg.w - cursor_margin - cursor_width, ratio);;
+    cursor.x = f32_lerp(bg.x + cursor_margin, bg.x + bg.w - cursor_margin - cursor_width, ratio);
     cursor.y = bg.y + 1 * cursor_margin;
     cursor.h = bg.h - 2 * cursor_margin;
     cursor.w = cursor_width;
