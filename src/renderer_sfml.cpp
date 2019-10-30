@@ -12,22 +12,6 @@ RendererSFML::RendererSFML(sf::RenderWindow& window)
 {
 }
 
-TextureId RendererSFML::CreateTexture(const char* filename)
-{
-    sf::Texture texture;
-    if (!texture.loadFromFile(filename))
-    {
-        fprintf(stderr, "Error: Cannot load texture '%s'\n", filename);
-        return -1;
-    }
-    
-    texture.setSmooth(true);
-    printf("Texture loaded: '%s'\n", filename);
-    textures.push_back(texture);
-
-    return (int)textures.size()-1;
-}
-
 TextureId RendererSFML::CreateTexture(int width, int height, unsigned char* pixels)
 {
     sf::Texture texture;

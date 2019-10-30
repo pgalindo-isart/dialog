@@ -14,7 +14,6 @@ class RendererSFML : public Renderer
 public:
 	RendererSFML(sf::RenderWindow& window);
 
-	virtual TextureId CreateTexture(const char* filename) override;
 	virtual TextureId CreateTexture(int width, int height, unsigned char* pixels) override;
 
 	virtual void RenderLine(float x0, float y0, float x1, float y1, color_t color) override;
