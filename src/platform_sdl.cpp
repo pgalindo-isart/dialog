@@ -54,7 +54,7 @@ void Platform::startFrame()
         }
     }
 
-    SDL_SetRenderDrawColor(renderer, 0x1e, 0x1e, 0x1e, SDL_ALPHA_OPAQUE);
+    SDL_SetRenderDrawColor(renderer, 0x44, 0x44, 0x44, SDL_ALPHA_OPAQUE);
     SDL_RenderClear(renderer);
 }
 

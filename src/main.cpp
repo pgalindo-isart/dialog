@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
             guiIO.mousePos[1] = p.io.mousePos.y;
 
             gui.ImNewFrame(guiIO);
-            gui.ImBackground(4);
+            gui.ImBackground(10);
 
             gui.ImText("FPS: %.2f", 1.f / p.deltaTime);
             gui.ImSliderFloat("charsPerSeconds", &charsPerSeconds, 10.f, 100.f);
@@ -61,7 +61,7 @@ int main(int argc, char* argv[])
             gui.ImSliderFloat("advance", &advance, 0.f, 1.f);
             
             gui.DrawText(gui.DebugFont(), "Make this work =>", 90, 365);
-            gui.DrawText(gui.DebugFont(), "     Like this =>", 90, 622.5);
+            gui.DrawText(gui.DebugFont(), "     Like this =>", 90, 622);
 
             // Implement this function
             myAnimatedDialog(p.getRenderer(), gui, text, advance);
