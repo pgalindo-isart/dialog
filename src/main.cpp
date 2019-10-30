@@ -28,6 +28,7 @@ int main(int argc, char* argv[])
     // Scope for GameRenderer and Gui
     {
         Gui gui(p.getRenderer());
+        gui.ImSetItemWidth(1000);
 
         const char* text = 
             "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod\n"

@@ -23,7 +23,6 @@ TextureId RendererSFML::CreateTexture(int width, int height, unsigned char* pixe
 
     texture.update(pixels);
     texture.setSmooth(true);
-    printf("Texture created: %dx%d\n", width, height);
     textures.push_back(texture);
 
     return (int)textures.size()-1;

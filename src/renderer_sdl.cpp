@@ -15,7 +15,6 @@ TextureId RendererSDL::CreateTexture(int width, int height, unsigned char* pixel
     SDL_UpdateTexture(texture, nullptr, pixels, width * sizeof(uint32_t));
     SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
 
-    printf("Texture created: %dx%d\n", width, height);
     this->textures.push_back(texture);
 
     return (int)(this->textures.size() - 1);
