@@ -17,7 +17,6 @@ public:
 	void ImNewFrame(im_io_t io);
 	void ImSetPalette(const unsigned int* palette);
 	void ImSetItemWidth(float width);
-	void ImBackground(int items);
 	void ImText(const char* format, ...);
 	void ImTextV(const char* format, va_list args);
 	bool ImSliderFloat(const char* text, float* value, float min, float max);
@@ -44,6 +43,7 @@ private:
 
 		float beginY;
 
+        int itemCount = 0;
 		float itemWidth = 200.f;
 		float itemHeight = 22.f;
 		float itemSpacing = 3.f;

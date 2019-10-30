@@ -53,7 +53,6 @@ int main(int argc, char* argv[])
             guiIO.mousePos[1] = p.io.mousePos.y;
 
             gui.ImNewFrame(guiIO);
-            gui.ImBackground(10);
 
             gui.ImText("FPS: %.2f", 1.f / p.deltaTime);
             gui.ImSliderFloat("charsPerSeconds", &charsPerSeconds, 10.f, 100.f);

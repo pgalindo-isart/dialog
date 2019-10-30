@@ -39,6 +39,18 @@ void Gui::ImNewFrame(im_io_t io)
     this->io = io;
     imState.penX = 10.f;
     imState.penY = 10.f;
+    
+    // Draw background based on previous frame item count
+    rect_t bg;
+    bg.x = imState.penX - imState.itemSpacing;
+    bg.y = imState.penY - imState.itemSpacing;
+    bg.w = imState.itemWidth + 2 * imState.itemSpacing;
+    bg.h = (imState.itemHeight * imState.itemCount + imState.itemSpacing * (imState.itemCount - 1)) + 2 * imState.itemSpacing;
+
+    color_t bgColor = imState.palette[IM_PAL_BG];
+    this->DrawFilledRect(bg, bgColor);
+
+    imState.itemCount = 0;
 }
 
 void Gui::ImSetPalette(const unsigned int* pal)
@@ -51,18 +63,6 @@ void Gui::ImSetItemWidth(float itemWidth)
     imState.itemWidth = itemWidth;
 }
 
-void Gui::ImBackground(int items)
-{
-    rect_t bg;
-    bg.x = imState.penX - imState.itemSpacing;
-    bg.y = imState.penY - imState.itemSpacing;
-    bg.w = imState.itemWidth + 2 * imState.itemSpacing;
-    bg.h = (imState.itemHeight * items + imState.itemSpacing * (items - 1)) + 2 * imState.itemSpacing;
-
-    color_t bgColor = imState.palette[IM_PAL_BG];
-    this->DrawFilledRect(bg, bgColor);
-}
-
 void Gui::ImText(const char* format, ...)
 {
     va_list args;
@@ -73,6 +73,8 @@ void Gui::ImText(const char* format, ...)
 
 void Gui::ImTextV(const char* format, va_list args)
 {
+    imState.itemCount++;
+
     // TODO: Make it safe
     char buf[255];
     vsprintf(buf, format, args);
@@ -82,6 +84,7 @@ void Gui::ImTextV(const char* format, va_list args)
 
 bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 {
+    imState.itemCount++;
     bool changed = false;
 
     // Background dimensions
@@ -135,6 +138,7 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 
 bool Gui::ImCheckBox(const char* text, bool* value)
 {
+    imState.itemCount++;
     bool changed = false;
 
     // Background dimensions
