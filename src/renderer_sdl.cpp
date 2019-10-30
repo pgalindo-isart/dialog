@@ -9,12 +9,6 @@ RendererSDL::RendererSDL(SDL_Renderer& renderer)
 
 }
 
-TextureId RendererSDL::CreateTexture(const char* filename)
-{
-    fprintf(stderr, "Not implemented: Cannot create texture %s\n", filename);
-    return -1;
-}
-
 TextureId RendererSDL::CreateTexture(int width, int height, unsigned char* pixels)
 {
     SDL_Texture* texture = SDL_CreateTexture(&renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STATIC, width, height);

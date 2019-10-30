@@ -1,7 +1,6 @@
 
 #include <cstdarg>
-
-#include "palette.hpp"
+#include <cstring>
 
 #include "maths.hpp"
 
@@ -14,6 +13,14 @@ Gui::Gui(Renderer& renderer)
 {
     uint32_t whitePixel = 0xffffffff;
     whiteTexture = renderer.CreateTexture(1, 1, (unsigned char*)&whitePixel);
+    
+    const unsigned int pal[IM_PAL_SIZE] = {
+        0x252526FF, // IM_PAL_BG
+        0x383838FF, // IM_PAL_ITEM_BG
+        0x007accFF, // IM_PAL_ITEM_CURSOR
+        0xCCCCCCFF, // IM_PAL_ITEM_TEXT
+    };
+    ImSetPalette(pal);
 }
 
 Gui::~Gui()
@@ -26,7 +33,7 @@ void Gui::DrawFilledRect(rect_t rect, color_t color)
     renderer.RenderTexture(whiteTexture, src, rect, color);
 }
 
-void Gui::ImNewFrame(GuiIO io)
+void Gui::ImNewFrame(im_io_t io)
 {
     prevIO = this->io;
     this->io = io;
@@ -34,7 +41,17 @@ void Gui::ImNewFrame(GuiIO io)
     imState.penY = 10.f;
 }
 
-void Gui::ImDrawBackground(int items)
+void Gui::ImSetPalette(const unsigned int* pal)
+{
+    memcpy(imState.palette, pal, IM_PAL_SIZE * sizeof(unsigned int));
+}
+
+void Gui::ImSetItemWidth(float itemWidth)
+{
+    imState.itemWidth = itemWidth;
+}
+
+void Gui::ImBackground(int items)
 {
     rect_t bg;
     bg.x = imState.penX - imState.itemSpacing;
@@ -42,8 +59,7 @@ void Gui::ImDrawBackground(int items)
     bg.w = imState.itemWidth + 2 * imState.itemSpacing;
     bg.h = (imState.itemHeight * items + imState.itemSpacing * (items - 1)) + 2 * imState.itemSpacing;
 
-    color_t bgColor = PAL[PAL_COLOR_20];
-    bgColor.a = 96;
+    color_t bgColor = imState.palette[IM_PAL_BG];
     this->DrawFilledRect(bg, bgColor);
 }
 
@@ -51,7 +67,7 @@ void Gui::ImText(const char* format, ...)
 {
     va_list args;
     va_start(args, format);
-    Gui::ImTextV(format, args);
+    this->ImTextV(format, args);
     va_end(args);
 }
 
@@ -81,13 +97,13 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 
     // If mouse is pressed inside, value will change
     float ratio;
-    if (io.mouseLeft && bg.contains(io.mousePos))
+    if (io.mouseLeft && bg.contains({ io.mousePos[0], io.mousePos[1] }))
     {
         float cursor_center_x_left = bg.x + cursor_margin + cursor_width / 2.f;
         float cursor_center_x_right = bg.x + bg.w - cursor_margin - cursor_width / 2.f;
 
         //ratio = f32_clamp(f32_invLerp(cursor_center_x_left, cursor_center_x_right, io.mousePos.x), 0.f, 1.f);
-        ratio = f32_linearRemap(cursor_center_x_left, cursor_center_x_right, io.mousePos.x, 0.f, 1.f, true);
+        ratio = f32_linearRemap(cursor_center_x_left, cursor_center_x_right, io.mousePos[0], 0.f, 1.f, true);
         *value = f32_lerp(min, max, ratio);
         changed = true;
     }
@@ -97,7 +113,7 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
     }
 
     // Render bg
-    this->DrawFilledRect(bg, PAL[PAL_COLOR_33]);
+    this->DrawFilledRect(bg, imState.palette[IM_PAL_ITEM_BG]);
 
     // Render cursor
     rect_t cursor;
@@ -105,7 +121,7 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
     cursor.y = bg.y + 1 * cursor_margin;
     cursor.h = bg.h - 2 * cursor_margin;
     cursor.w = cursor_width;
-    this->DrawFilledRect(cursor, PAL[PAL_COLOR_02]);
+    this->DrawFilledRect(cursor, imState.palette[IM_PAL_ITEM_CURSOR]);
 
     // Render number text
     char valueStr[255];
@@ -129,9 +145,9 @@ bool Gui::ImCheckBox(const char* text, bool* value)
     bg.h = imState.itemHeight;
 
     // Render bg
-    this->DrawFilledRect(bg, PAL[PAL_COLOR_33]);
+    this->DrawFilledRect(bg, imState.palette[IM_PAL_ITEM_BG]);
 
-    if ((io.mouseLeft && !prevIO.mouseLeft) && bg.contains(io.mousePos))
+    if ((io.mouseLeft && !prevIO.mouseLeft) && bg.contains({ io.mousePos[0], io.mousePos[1] }))
     {
         *value = !*value;
         changed = true;
@@ -147,7 +163,7 @@ bool Gui::ImCheckBox(const char* text, bool* value)
         cursor.y = bg.y + cursor_margin;
         cursor.h = bg.h - 2 * cursor_margin;
         cursor.w = bg.w - 2 * cursor_margin;
-        this->DrawFilledRect(cursor, PAL[PAL_COLOR_02]);
+        this->DrawFilledRect(cursor, imState.palette[IM_PAL_ITEM_CURSOR]);
     }
 
     // Render number text

@@ -1,17 +1,21 @@
-MAKEFLAGS+=--no-builtin-rules
+MAKEFLAGS+=--no-builtin-rules --no-builtin-variables
 
 CXXFLAGS=-O0 -g -Wall -MMD -Wno-unused-function
-CXX?=g++
+CXXFLAGS+=-Iinclude
+CXX=g++
+AR=ar
+ARFLAGS=rcs
 
 # System config (à changer notamment là où vous avez installé les fichiers de dev de la SFML)
 LDFLAGS+=-L$(HOME)/user-sysroot/lib/
 CXXFLAGS+=-I$(HOME)/user-sysroot/include/
 
-COMMON_OBJS=src/main.o src/gui.o src/font.o # src/dialog.o
+COMMON_OBJS=src/main.o src/gui.o src/font.o src/dialog.o
 SFML_OBJS=src/platform_sfml.o src/renderer_sfml.o
 SDL_OBJS=src/platform_sdl.o src/renderer_sdl.o
+IM_OBJS=src/im_api.o src/gui.o src/font.o src/renderer_gl.o
 
-OBJS=$(COMMON_OBJS) $(SFML_OBJS) $(SDL_OBJS)
+OBJS=$(COMMON_OBJS) $(SFML_OBJS) $(SDL_OBJS) src/im_api.o
 DEPS=$(OBJS:.o=.d)
 
 .PHONY: all clean
@@ -23,6 +27,9 @@ all: dialog_sdl
 
 %.o: %.cpp
 	$(CXX) -o $@ -c $< $(CXXFLAGS)
+
+libim.a: $(IM_OBJS)
+	$(AR) $(ARFLAGS) $@ $^
 
 # SFML version
 dialog_sfml: CXXFLAGS+=-DPLATFORM_SFML

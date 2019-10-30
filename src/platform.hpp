@@ -4,8 +4,8 @@
 
 struct PlatformIO
 {
-	bool mouseLeft;
-	vec2_t mousePos;
+    bool mouseLeft;
+    vec2_t mousePos;
 };
 
 #ifdef PLATFORM_SDL

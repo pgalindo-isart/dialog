@@ -1,2 +1,5 @@
 *.o
 *.d
+*.a
+dialog_sdl
+dialog_sfml

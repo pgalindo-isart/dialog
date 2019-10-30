@@ -2,13 +2,9 @@
 
 #include "font.hpp"
 
-class Renderer;
+#include "im_api.h"
 
-struct GuiIO
-{
-	bool mouseLeft;
-	vec2_t mousePos;
-};
+class Renderer;
 
 class Gui
 {
@@ -18,8 +14,10 @@ public:
 
 	// Very basic immediate gui impl
 	// Immediate gui functions starts with Im prefix
-	void ImNewFrame(GuiIO io);
-	void ImDrawBackground(int items);
+	void ImNewFrame(im_io_t io);
+	void ImSetPalette(const unsigned int* palette);
+	void ImSetItemWidth(float width);
+	void ImBackground(int items);
 	void ImText(const char* format, ...);
 	void ImTextV(const char* format, va_list args);
 	bool ImSliderFloat(const char* text, float* value, float min, float max);
@@ -33,9 +31,10 @@ public:
 	void DrawFilledRect(rect_t rect, color_t color);
 
 private:
-	Renderer & renderer;
-	GuiIO io;
-	GuiIO prevIO;
+	Renderer& renderer;
+	im_io_t io;
+	im_io_t prevIO;
+
 
 	// Immediate mode state (for ImXXX functions)
 	struct imgui_t
@@ -50,6 +49,8 @@ private:
 		float itemSpacing = 3.f;
 		float textOffsetY = 15.f;
 		float textPaddingX = 7.f;
+		
+		unsigned int palette[IM_PAL_SIZE];
 	};
 
 	imgui_t imState;

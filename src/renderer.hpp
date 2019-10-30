@@ -10,7 +10,6 @@ class Renderer
 {
 public:
 	virtual ~Renderer() = default;
-	virtual TextureId CreateTexture(const char* filename) = 0;
 	virtual TextureId CreateTexture(int width, int height, unsigned char* pixels) = 0;
 	
 	virtual void RenderLine(float x0, float y0, float x1, float y1, color_t color) = 0;

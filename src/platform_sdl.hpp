@@ -3,6 +3,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "im_api.h"
+
 #include "platform.hpp"
 
 class Renderer;

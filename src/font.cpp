@@ -1,5 +1,4 @@
 
-#include <iostream>
 #include <fstream>
 #include <cassert>
 
@@ -15,7 +14,6 @@ Font::Font(Renderer& renderer, const char* filename, float fontSize)
     // Load ttfBuffer
     {
         std::ifstream fin(filename, std::ios::out | std::ios::binary);
-        std::cout << "Load font file '" << filename << "'" << std::endl;
         fin.seekg(0, std::ios_base::end);
         size_t size = fin.tellg();
         fin.seekg(0, std::ios_base::beg);

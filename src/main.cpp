@@ -8,7 +8,6 @@
 #include "platform.hpp"
 #include "enable_high_perf_gpu.hpp"
 
-#include "palette.hpp" // Colors are stored there
 #include "gui.hpp"     // Gui functions
 #include "maths.hpp"   // Math functions
 
@@ -47,12 +46,13 @@ int main(int argc, char* argv[])
             if (animate)
                 advance += p.deltaTime * charsPerSeconds / textLen;
 
-            GuiIO guiIO; // Gui need mouse pos and mouse left button to work
+            im_io_t guiIO; // Gui need mouse pos and mouse left button to work
             guiIO.mouseLeft = p.io.mouseLeft;
-            guiIO.mousePos = p.io.mousePos;
+            guiIO.mousePos[0] = p.io.mousePos.x;
+            guiIO.mousePos[1] = p.io.mousePos.y;
 
             gui.ImNewFrame(guiIO);
-            gui.ImDrawBackground(4);
+            gui.ImBackground(4);
 
             gui.ImText("FPS: %.2f", 1.f / p.deltaTime);
             gui.ImSliderFloat("charsPerSeconds", &charsPerSeconds, 10.f, 100.f);
@@ -89,7 +89,7 @@ void myAnimatedDialog(Renderer& renderer, Gui& gui, const char* text, float adva
     {
         float bgAlpha = 0.8f;
         rect_t bg = { x, y, boxWidth, boxHeight };
-        color_t bgColor = PAL[PAL_COLOR_30];
+        color_t bgColor = 0x333333FF;
         bgColor.a = (u8)(bgAlpha * 0xff);
         gui.DrawFilledRect(bg, bgColor);
     }

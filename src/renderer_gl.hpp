@@ -1,14 +1,19 @@
+#pragma once
+
+#include "glad/glad.h"
 
 #include "renderer.hpp"
 
-struct SDL_Renderer;
-struct SDL_Texture;
+struct GLTexture
+{
+    int width;
+    int height;
+    GLuint texture;
+};
 
-class RendererSDL : public Renderer
+class RendererGL : public Renderer
 {
 public:
-	RendererSDL(SDL_Renderer& renderer);
-
 	virtual TextureId CreateTexture(int width, int height, unsigned char* pixels) override;
 
 	virtual void RenderLine(float x0, float y0, float x1, float y1, color_t color) override;
@@ -16,6 +21,5 @@ public:
 	virtual void RenderFilledRect(rect_t rect, color_t color) override;
 
 private:
-	SDL_Renderer& renderer;
-	std::vector<SDL_Texture*> textures;
+	std::vector<GLTexture> textures;
 };
