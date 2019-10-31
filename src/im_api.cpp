@@ -73,13 +73,6 @@ void im_sliderFloat(const char* text, float* value, float min, float max)
     g_gui->ImSliderFloat(text, value, min, max);
 }
 
-void im_background(int items)
-{
-    assert(im_valid());
-
-    g_gui->ImBackground(items);
-}
-
 bool im_checkbox(const char* text, bool* value)
 {
     assert(im_valid());
