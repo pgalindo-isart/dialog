@@ -51,6 +51,10 @@ void Gui::ImNewFrame(im_io_t io)
     this->DrawFilledRect(bg, bgColor);
 
     imState.itemCount = 0;
+    imState.itemId = 0;
+
+    if (!io.mouseLeft)
+        imState.selectedId = -1;
 }
 
 void Gui::ImSetPalette(const unsigned int* pal)
@@ -73,18 +77,30 @@ void Gui::ImText(const char* format, ...)
 
 void Gui::ImTextV(const char* format, va_list args)
 {
-    imState.itemCount++;
-
     // TODO: Make it safe
     char buf[255];
     vsprintf(buf, format, args);
     this->DrawText(debugFont, buf, imState.penX, imState.penY + imState.textOffsetY);
     imState.penY += imState.itemHeight + imState.itemSpacing;
+
+    imState.itemCount++;
+    imState.itemId++;
+}
+
+bool Gui::ImCheckItemSelected(const rect_t& rect)
+{
+    if (   (imState.selectedId == imState.itemId) 
+        || (imState.selectedId == -1 && (io.mouseLeft && rect.contains({ io.mousePos[0], io.mousePos[1] }))))
+    {
+        imState.selectedId = imState.itemId;
+        return true;
+    }
+
+    return false;
 }
 
 bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 {
-    imState.itemCount++;
     bool changed = false;
 
     // Background dimensions
@@ -100,7 +116,7 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 
     // If mouse is pressed inside, value will change
     float ratio;
-    if (io.mouseLeft && bg.contains({ io.mousePos[0], io.mousePos[1] }))
+    if (ImCheckItemSelected(bg))
     {
         float cursor_center_x_left = bg.x + cursor_margin + cursor_width / 2.f;
         float cursor_center_x_right = bg.x + bg.w - cursor_margin - cursor_width / 2.f;
@@ -133,12 +149,14 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 
     imState.penY += imState.itemHeight + imState.itemSpacing;
 
+    imState.itemCount++;
+    imState.itemId++;
+
     return changed;
 }
 
 bool Gui::ImCheckBox(const char* text, bool* value)
 {
-    imState.itemCount++;
     bool changed = false;
 
     // Background dimensions
@@ -151,7 +169,7 @@ bool Gui::ImCheckBox(const char* text, bool* value)
     // Render bg
     this->DrawFilledRect(bg, imState.palette[IM_PAL_ITEM_BG]);
 
-    if ((io.mouseLeft && !prevIO.mouseLeft) && bg.contains({ io.mousePos[0], io.mousePos[1] }))
+    if (ImCheckItemSelected(bg))
     {
         *value = !*value;
         changed = true;
@@ -174,6 +192,9 @@ bool Gui::ImCheckBox(const char* text, bool* value)
     this->DrawText(debugFont, text, imState.penX + bg.w + imState.textPaddingX, imState.penY + imState.textOffsetY);
 
     imState.penY += imState.itemHeight + imState.itemSpacing;
+
+    imState.itemCount++;
+    imState.itemId++;
 
     return changed;
 }

@@ -34,6 +34,7 @@ private:
 	im_io_t io;
 	im_io_t prevIO;
 
+	bool ImCheckItemSelected(const rect_t& rect);
 
 	// Immediate mode state (for ImXXX functions)
 	struct imgui_t
@@ -49,6 +50,9 @@ private:
 		float itemSpacing = 3.f;
 		float textOffsetY = 15.f;
 		float textPaddingX = 7.f;
+
+		int itemId = 0;
+		int selectedId = -1;
 		
 		unsigned int palette[IM_PAL_SIZE];
 	};

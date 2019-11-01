@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "types.h"
+#include "types.hpp"
 
 typedef int TextureId;
 

@@ -37,13 +37,13 @@ struct rect_t
 	float w;
 	float h;
 
-	bool contains(vec2_t pos)
+	bool contains(vec2_t pos) const
 	{
 		return   pos.x >= this->x && pos.x < this->x + this->w
 			  && pos.y >= this->y && pos.y < this->y + this->h;
 	}
 
-	bool intersects(rect_t other)
+	bool intersects(rect_t other) const
 	{
 		return f32_max(this->x, other.x) < f32_min(this->x + this->w, other.x + other.w) &&
 			   f32_max(this->y, other.y) < f32_min(this->y + this->h, other.y + other.h);

@@ -41,8 +41,8 @@ Font::Font(Renderer& renderer, const char* filename, float fontSize)
         struct { int start; int end; } ranges[] =
         {
             { 0xFFFD, 0xFFFD }, // Specials: Replacement character
-        { 0x0020, 0x007F }, // Basic Latin
-        { 0x00A0, 0x00FF }, // Latin-1 Supplement
+            { 0x0020, 0x007F }, // Basic Latin
+            { 0x00A0, 0x00FF }, // Latin-1 Supplement
         };
 
         // Calculate nbChars in all ranges
