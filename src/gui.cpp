@@ -33,10 +33,25 @@ void Gui::DrawFilledRect(rect_t rect, color_t color)
     renderer.RenderTexture(whiteTexture, src, rect, color);
 }
 
+bool Gui::ImMouseJustPressed()
+{
+    return (imState.io.mouseLeft && !imPrevState.io.mouseLeft);
+}
+
+bool Gui::ImMouseJustReleased()
+{
+    return (!imState.io.mouseLeft && imPrevState.io.mouseLeft);
+}
+
+bool Gui::ImMouseInside(rect_t rect)
+{
+    return rect.contains({ imState.io.mousePos[0], imState.io.mousePos[1] });
+}
+
 void Gui::ImNewFrame(im_io_t io)
 {
-    prevIO = this->io;
-    this->io = io;
+    imPrevState = imState;
+    imState.io = io;
     imState.penX = 10.f;
     imState.penY = 10.f;
     
@@ -52,9 +67,6 @@ void Gui::ImNewFrame(im_io_t io)
 
     imState.itemCount = 0;
     imState.itemId = 0;
-
-    if (!io.mouseLeft)
-        imState.selectedId = -1;
 }
 
 void Gui::ImSetPalette(const unsigned int* pal)
@@ -87,18 +99,6 @@ void Gui::ImTextV(const char* format, va_list args)
     imState.itemId++;
 }
 
-bool Gui::ImCheckItemSelected(const rect_t& rect)
-{
-    if (   (imState.selectedId == imState.itemId) 
-        || (imState.selectedId == -1 && (io.mouseLeft && rect.contains({ io.mousePos[0], io.mousePos[1] }))))
-    {
-        imState.selectedId = imState.itemId;
-        return true;
-    }
-
-    return false;
-}
-
 bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 {
     bool changed = false;
@@ -116,13 +116,22 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 
     // If mouse is pressed inside, value will change
     float ratio;
-    if (ImCheckItemSelected(bg))
+    if (imState.selectedId == -1 && ImMouseJustPressed() && ImMouseInside(bg))
+    {
+        imState.selectedId = imState.itemId;
+    }
+    else if (imState.selectedId == imState.itemId && ImMouseJustReleased())
+    {
+        imState.selectedId = -1;
+    }
+
+    if (imState.selectedId == imState.itemId)
     {
         float cursor_center_x_left = bg.x + cursor_margin + cursor_width / 2.f;
         float cursor_center_x_right = bg.x + bg.w - cursor_margin - cursor_width / 2.f;
 
-        //ratio = f32_clamp(f32_invLerp(cursor_center_x_left, cursor_center_x_right, io.mousePos.x), 0.f, 1.f);
-        ratio = f32_linearRemap(cursor_center_x_left, cursor_center_x_right, io.mousePos[0], 0.f, 1.f, true);
+        //ratio = f32_clamp(f32_invLerp(cursor_center_x_left, cursor_center_x_right, imState.io.mousePos.x), 0.f, 1.f);
+        ratio = f32_linearRemap(cursor_center_x_left, cursor_center_x_right, imState.io.mousePos[0], 0.f, 1.f, true);
         *value = f32_lerp(min, max, ratio);
         changed = true;
     }
@@ -165,28 +174,44 @@ bool Gui::ImCheckBox(const char* text, bool* value)
     bg.y = imState.penY;
     bg.w = imState.itemHeight;
     bg.h = imState.itemHeight;
+    
+    // Cursor dimensions
+    float cursor_margin = 6.f;
 
     // Render bg
     this->DrawFilledRect(bg, imState.palette[IM_PAL_ITEM_BG]);
 
-    if (ImCheckItemSelected(bg))
+    if (imState.selectedId == -1 && ImMouseJustPressed() && ImMouseInside(bg))
     {
-        *value = !*value;
-        changed = true;
+        imState.selectedId = imState.itemId;
+    }
+    else if (imPrevState.selectedId == imState.itemId && ImMouseJustReleased())
+    {
+        if (ImMouseInside(bg))
+        {
+            *value = !*value;
+            changed = true;
+        }
+        imState.selectedId = -1;
     }
 
-    if (*value)
-    {
-        // Cursor dimensions
-        float cursor_margin = 6.f;
+    // Draw cursor
+    rect_t cursor;
+    cursor.x = bg.x + cursor_margin;
+    cursor.y = bg.y + cursor_margin;
+    cursor.h = bg.h - 2 * cursor_margin;
+    cursor.w = bg.w - 2 * cursor_margin;
 
-        rect_t cursor;
-        cursor.x = bg.x + cursor_margin;
-        cursor.y = bg.y + cursor_margin;
-        cursor.h = bg.h - 2 * cursor_margin;
-        cursor.w = bg.w - 2 * cursor_margin;
-        this->DrawFilledRect(cursor, imState.palette[IM_PAL_ITEM_CURSOR]);
-    }
+    // Change color alpha depending on state (selected, true, false)
+    color_t color = imState.palette[IM_PAL_ITEM_CURSOR];
+    u8 alpha;
+    if (imState.selectedId == imState.itemId)
+        alpha = 127;
+    else
+        alpha = *value ? 255 : 0;
+    color.a = alpha;
+    
+    this->DrawFilledRect(cursor, color);
 
     // Render number text
     this->DrawText(debugFont, text, imState.penX + bg.w + imState.textPaddingX, imState.penY + imState.textOffsetY);

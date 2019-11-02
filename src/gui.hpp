@@ -31,10 +31,10 @@ public:
 
 private:
 	Renderer& renderer;
-	im_io_t io;
-	im_io_t prevIO;
 
-	bool ImCheckItemSelected(const rect_t& rect);
+	bool ImMouseJustPressed();
+	bool ImMouseJustReleased();
+	bool ImMouseInside(rect_t rect);
 
 	// Immediate mode state (for ImXXX functions)
 	struct imgui_t
@@ -55,9 +55,13 @@ private:
 		int selectedId = -1;
 		
 		unsigned int palette[IM_PAL_SIZE];
+
+		im_io_t io;
 	};
 
 	imgui_t imState;
+	imgui_t imPrevState;
+
 	TextureId whiteTexture; // Texture used to draw filled rects
 
 	// Fonts loaded
