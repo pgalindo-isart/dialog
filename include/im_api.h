@@ -18,6 +18,8 @@ enum im_palette_t
     IM_PAL_BG,
     IM_PAL_ITEM_BG,
     IM_PAL_ITEM_CURSOR,
+    IM_PAL_ITEM_CURSOR_HOVER,
+    IM_PAL_ITEM_CURSOR_HIGHLIGHT,
     IM_PAL_ITEM_TEXT,
 
     IM_PAL_SIZE
@@ -34,8 +36,8 @@ void im_setItemWidth(float itemWidth);
 void im_text(const char* format, ...);
 void im_text_v(const char* format, va_list args);
 void im_sliderFloat(const char* text, float* value, float min, float max);
-void im_background(int items);
 bool im_checkbox(const char* text, bool* value);
+bool im_button(const char* text);
 
 #ifdef __cplusplus
 }

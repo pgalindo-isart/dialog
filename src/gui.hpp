@@ -21,9 +21,12 @@ public:
 	void ImTextV(const char* format, va_list args);
 	bool ImSliderFloat(const char* text, float* value, float min, float max);
 	bool ImCheckBox(const char* text, bool* value);
+	bool ImButton(const char* text);
 
 	const Font& DebugFont() const { return debugFont; }
 	const Font& UIFont() const { return uiFont; }
+	
+	rect_t GetTextRect(const Font& font, const char* text) const;
 
 	// Draw functions
 	void DrawText(const Font& font, const char* text, float x, float y);
@@ -52,7 +55,7 @@ private:
 		float textPaddingX = 7.f;
 
 		int itemId = 0;
-		int selectedId = -1;
+		int focusedId = -1;
 		
 		unsigned int palette[IM_PAL_SIZE];
 

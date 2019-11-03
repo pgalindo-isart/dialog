@@ -14,12 +14,15 @@ Gui::Gui(Renderer& renderer)
     uint32_t whitePixel = 0xffffffff;
     whiteTexture = renderer.CreateTexture(1, 1, (unsigned char*)&whitePixel);
     
-    const unsigned int pal[IM_PAL_SIZE] = {
+    unsigned int pal[IM_PAL_SIZE] = {
         0x252526FF, // IM_PAL_BG
         0x383838FF, // IM_PAL_ITEM_BG
-        0x007accFF, // IM_PAL_ITEM_CURSOR
+        0x007ACCFF, // IM_PAL_ITEM_CURSOR
+        0x1F8BD3FF, // IM_PAL_ITEM_CURSOR_HOVER
+        0x72B7E5FF, // IM_PAL_ITEM_CURSOR_HIGHLIGHT
         0xCCCCCCFF, // IM_PAL_ITEM_TEXT
     };
+
     ImSetPalette(pal);
 }
 
@@ -110,22 +113,25 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
     bg.w = imState.itemWidth;
     bg.h = imState.itemHeight;
 
+    bool hovered = ImMouseInside(bg);
+
     // Cursor dimensions
     float cursor_margin = 3.f;
     float cursor_width = 10.f;
 
     // If mouse is pressed inside, value will change
     float ratio;
-    if (imState.selectedId == -1 && ImMouseJustPressed() && ImMouseInside(bg))
+    if (imState.focusedId == -1 && ImMouseJustPressed() && hovered)
     {
-        imState.selectedId = imState.itemId;
+        imState.focusedId = imState.itemId;
     }
-    else if (imState.selectedId == imState.itemId && ImMouseJustReleased())
+    else if (imState.focusedId == imState.itemId && ImMouseJustReleased())
     {
-        imState.selectedId = -1;
+        imState.focusedId = -1;
     }
 
-    if (imState.selectedId == imState.itemId)
+    bool focused = imState.focusedId == imState.itemId;
+    if (focused)
     {
         float cursor_center_x_left = bg.x + cursor_margin + cursor_width / 2.f;
         float cursor_center_x_right = bg.x + bg.w - cursor_margin - cursor_width / 2.f;
@@ -140,18 +146,18 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
         ratio = f32_clamp((*value - min) / (max - min), 0.f, 1.f);
     }
 
-    // Render bg
+    // Draw bg
     this->DrawFilledRect(bg, imState.palette[IM_PAL_ITEM_BG]);
 
-    // Render cursor
+    // Draw cursor
     rect_t cursor;
     cursor.x = f32_lerp(bg.x + cursor_margin, bg.x + bg.w - cursor_margin - cursor_width, ratio);
     cursor.y = bg.y + 1 * cursor_margin;
     cursor.h = bg.h - 2 * cursor_margin;
     cursor.w = cursor_width;
-    this->DrawFilledRect(cursor, imState.palette[IM_PAL_ITEM_CURSOR]);
+    this->DrawFilledRect(cursor, imState.palette[focused ? IM_PAL_ITEM_CURSOR_HIGHLIGHT : (hovered ? IM_PAL_ITEM_CURSOR_HOVER : IM_PAL_ITEM_CURSOR)]);
 
-    // Render number text
+    // Draw number text
     char valueStr[255];
     sprintf(valueStr, "%s: %.2f", text, *value);
     this->DrawText(debugFont, valueStr, imState.penX + 6.f, imState.penY + imState.textOffsetY);
@@ -174,25 +180,27 @@ bool Gui::ImCheckBox(const char* text, bool* value)
     bg.y = imState.penY;
     bg.w = imState.itemHeight;
     bg.h = imState.itemHeight;
+
+    bool hovered = ImMouseInside(bg);
     
     // Cursor dimensions
     float cursor_margin = 6.f;
 
-    // Render bg
+    // Draw bg
     this->DrawFilledRect(bg, imState.palette[IM_PAL_ITEM_BG]);
 
-    if (imState.selectedId == -1 && ImMouseJustPressed() && ImMouseInside(bg))
+    if (imState.focusedId == -1 && ImMouseJustPressed() && hovered)
     {
-        imState.selectedId = imState.itemId;
+        imState.focusedId = imState.itemId;
     }
-    else if (imPrevState.selectedId == imState.itemId && ImMouseJustReleased())
+    else if (imPrevState.focusedId == imState.itemId && ImMouseJustReleased())
     {
-        if (ImMouseInside(bg))
+        if (hovered)
         {
             *value = !*value;
             changed = true;
         }
-        imState.selectedId = -1;
+        imState.focusedId = -1;
     }
 
     // Draw cursor
@@ -203,17 +211,17 @@ bool Gui::ImCheckBox(const char* text, bool* value)
     cursor.w = bg.w - 2 * cursor_margin;
 
     // Change color alpha depending on state (selected, true, false)
-    color_t color = imState.palette[IM_PAL_ITEM_CURSOR];
+    color_t color = imState.palette[hovered ? IM_PAL_ITEM_CURSOR_HOVER : IM_PAL_ITEM_CURSOR];
     u8 alpha;
-    if (imState.selectedId == imState.itemId)
-        alpha = 127;
+    if (imState.focusedId == imState.itemId)
+        alpha = color.a / 2;
     else
-        alpha = *value ? 255 : 0;
+        alpha = *value ? color.a : 0;
     color.a = alpha;
     
     this->DrawFilledRect(cursor, color);
 
-    // Render number text
+    // Draw text
     this->DrawText(debugFont, text, imState.penX + bg.w + imState.textPaddingX, imState.penY + imState.textOffsetY);
 
     imState.penY += imState.itemHeight + imState.itemSpacing;
@@ -222,6 +230,49 @@ bool Gui::ImCheckBox(const char* text, bool* value)
     imState.itemId++;
 
     return changed;
+}
+
+bool Gui::ImButton(const char* text)
+{
+    bool buttonPressed = false;
+
+    rect_t textSize = GetTextRect(debugFont, text);
+
+    // Background dimensions
+    rect_t bg;
+    bg.x = imState.penX;
+    bg.y = imState.penY;
+    bg.w = textSize.w + 2 * imState.textPaddingX;
+    bg.h = imState.itemHeight;
+
+    bool hovered = ImMouseInside(bg);
+    
+    if (imState.focusedId == -1 && ImMouseJustPressed() && hovered)
+    {
+        imState.focusedId = imState.itemId;
+    }
+    else if (imState.focusedId == imState.itemId && ImMouseJustReleased())
+    {
+        imState.focusedId = -1;
+        if (ImMouseInside(bg))
+            buttonPressed = true;
+    }
+
+    bool focused = (imState.focusedId == imState.itemId);
+
+    
+    // Draw bg
+    this->DrawFilledRect(bg, imState.palette[focused ? IM_PAL_ITEM_CURSOR_HIGHLIGHT : (hovered ? IM_PAL_ITEM_CURSOR_HOVER : IM_PAL_ITEM_CURSOR)]);
+    
+    // Draw text
+    this->DrawText(debugFont, text, imState.penX + imState.textPaddingX, imState.penY + imState.textOffsetY);
+
+    imState.penY += imState.itemHeight + imState.itemSpacing;
+
+    imState.itemCount++;
+    imState.itemId++;
+
+    return buttonPressed;
 }
 
 void Gui::DrawText(const Font& font, const char* text, float x, float y)
@@ -260,5 +311,43 @@ void Gui::DrawText(const Font& font, const char* text, float x, float y)
 
         cursor++;
     }
+}
 
+rect_t Gui::GetTextRect(const Font& font, const char* text) const
+{
+    rect_t rect = {};
+    float penX = 0.f;
+    float penY = 0.f;
+
+    int advanceY = (int)((font.ascent - font.descent + font.lineGap) * font.scale);
+
+    // TODO: Handle UTF-8
+    const char* cursor = text;
+    while (*cursor != '\0')
+    {
+        int32_t charCode = (unsigned char)*cursor;
+        switch (charCode)
+        {
+        case '\n':
+            penX = 0.f;
+            penY += advanceY;
+            break;
+
+        default:
+            {
+                irect_t src;
+                rect_t dst;
+                font.GetGlyphCoords(charCode, &penX, &penY, &src, &dst);
+                rect = rect.grow(dst);
+
+                // Kerning
+                if (cursor[1] != '\0')
+                    penX += font.scale * font.GetKerningAdvance(cursor[0], cursor[1]);
+            }
+        }
+
+        cursor++;
+    }
+
+    return rect;
 }

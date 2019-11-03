@@ -48,6 +48,33 @@ struct rect_t
 		return f32_max(this->x, other.x) < f32_min(this->x + this->w, other.x + other.w) &&
 			   f32_max(this->y, other.y) < f32_min(this->y + this->h, other.y + other.h);
 	}
+	
+	rect_t grow(rect_t other)
+	{
+		rect_t result;
+
+		result = *this;
+		if (other.x < result.x)
+		{
+			result.w += (result.x - other.x);
+			result.x = other.x;
+		}
+		if (other.y < result.y)
+		{
+			result.h += (result.y - other.y);
+			result.y = other.y;
+		}
+		if (other.x + other.w > result.x + result.w)
+		{
+			result.w += (other.x + other.w) - (result.x + result.w);
+		}
+		if (other.y + other.h > result.y + result.h)
+		{
+			result.h += (other.y + other.h) - (result.y + result.h);
+		}
+
+		return result;
+	}
 };
 
 struct color_t

@@ -79,3 +79,10 @@ bool im_checkbox(const char* text, bool* value)
 
     return g_gui->ImCheckBox(text, value);
 }
+
+bool im_button(const char* text)
+{
+    assert(im_valid());
+
+    return g_gui->ImButton(text);
+}
