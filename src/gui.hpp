@@ -30,7 +30,7 @@ public:
 	rect_t GetTextRect(const Font& font, const char* text) const;
 
 	// Draw functions
-	rect_t DrawText(const Font& font, const char* text, float x, float y);
+	rect_t DrawText(const Font& font, const char* text, float x, float y, color_t color = 0xffffffff);
 	void DrawFilledRect(rect_t rect, color_t color);
 
 private:

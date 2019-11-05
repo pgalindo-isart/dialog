@@ -39,6 +39,8 @@ void im_text_v(const char* format, va_list args);
 void im_sliderFloat(const char* text, float* value, float min, float max);
 bool im_checkbox(const char* text, bool* value);
 bool im_button(const char* text);
+void im_get_text_rect(const char* text, float* x, float* y, float* w, float* h);
+void im_draw_text(float x, float y, int r, int g, int b, const char* text);
 
 #ifdef __cplusplus
 }

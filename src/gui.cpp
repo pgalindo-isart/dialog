@@ -316,7 +316,7 @@ bool Gui::ImButton(const char* text)
     return buttonPressed;
 }
 
-rect_t Gui::DrawText(const Font& font, const char* text, float x, float y)
+rect_t Gui::DrawText(const Font& font, const char* text, float x, float y, color_t color)
 {
     float penX = x;
     float penY = y;
@@ -345,7 +345,7 @@ rect_t Gui::DrawText(const Font& font, const char* text, float x, float y)
                 rect = rect.grow(dst);
 
                 // Draw!
-                renderer.RenderTexture(font.glyphAtlas, src, dst);
+                renderer.RenderTexture(font.glyphAtlas, src, dst, color);
 
                 // Kerning
                 if (cursor[1] != '\0')
