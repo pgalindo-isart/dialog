@@ -2,7 +2,7 @@ MAKEFLAGS+=--no-builtin-rules --no-builtin-variables
 
 CXXFLAGS=-O0 -g -Wall -MMD -Wno-unused-function
 CXXFLAGS+=-Iinclude
-CXX?=g++
+CXX=g++
 AR=ar
 ARFLAGS=rcs
 

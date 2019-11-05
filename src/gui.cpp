@@ -75,11 +75,14 @@ void Gui::ImAdvancePen()
 
 void Gui::ImNewFrame(im_io_t io)
 {
+    imState.maxPenX = f32_max(imState.maxPenX, imState.penX);
+    imState.penY += imState.itemHeight + imState.itemSpacing;
+
     imPrevState = imState;
+
+    imState.skipNextAdvancePen = false;
     imState.itemId = 0;
     ImAdvancePen();
-
-    imPrevState.penY += imState.itemHeight + imState.itemSpacing;
     
     // Draw background based on previous frame item count
     rect_t bg;
