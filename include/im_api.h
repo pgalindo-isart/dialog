@@ -33,6 +33,7 @@ void im_newFrame(im_io_t io);
 void im_setPalette(const unsigned int* palette);
 void im_setItemWidth(float itemWidth);
 
+void im_sameLine(float spacing = -1.f);
 void im_text(const char* format, ...);
 void im_text_v(const char* format, va_list args);
 void im_sliderFloat(const char* text, float* value, float min, float max);

@@ -56,11 +56,11 @@ int main(int argc, char* argv[])
 
             gui.ImText("FPS: %.2f", 1.f / p.deltaTime);
             gui.ImSliderFloat("charsPerSeconds", &charsPerSeconds, 10.f, 100.f);
-            gui.ImCheckBox("animate", &animate);
             gui.ImSliderFloat("advance", &advance, 0.f, 1.f);
+            gui.ImCheckBox("animate", &animate);
             if (gui.ImButton("reset"))
                 advance = 0.f;
-            
+
             gui.DrawText(gui.DebugFont(), "Make this work =>", 90, 365);
             gui.DrawText(gui.DebugFont(), "     Like this =>", 90, 622);
             

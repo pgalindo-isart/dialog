@@ -49,6 +49,13 @@ void im_setItemWidth(float itemWidth)
     g_gui->ImSetItemWidth(itemWidth);
 }
 
+void im_sameLine(float spacing)
+{
+    assert(im_valid());
+
+    g_gui->ImSameLine(spacing);
+}
+
 void im_text(const char* format, ...)
 {
     assert(im_valid());

@@ -4,17 +4,17 @@
 
 static float f32_round(float x)
 {
-	return std::roundf(x);
+	return std::round(x);
 }
 
 static float f32_sin(float t)
 {
-	return sinf(t);
+	return std::sin(t);
 }
 
 static float f32_cos(float t)
 {
-	return cosf(t);
+	return std::cos(t);
 }
 
 static float f32_lerp(float x, float y, float a)

@@ -17,6 +17,7 @@ public:
 	void ImNewFrame(im_io_t io);
 	void ImSetPalette(const unsigned int* palette);
 	void ImSetItemWidth(float width);
+	void ImSameLine(float spacing = -1.f);
 	void ImText(const char* format, ...);
 	void ImTextV(const char* format, va_list args);
 	bool ImSliderFloat(const char* text, float* value, float min, float max);
@@ -29,7 +30,7 @@ public:
 	rect_t GetTextRect(const Font& font, const char* text) const;
 
 	// Draw functions
-	void DrawText(const Font& font, const char* text, float x, float y);
+	rect_t DrawText(const Font& font, const char* text, float x, float y);
 	void DrawFilledRect(rect_t rect, color_t color);
 
 private:
@@ -38,6 +39,7 @@ private:
 	bool ImMouseJustPressed();
 	bool ImMouseJustReleased();
 	bool ImMouseInside(rect_t rect);
+	void ImAdvancePen();
 
 	// Immediate mode state (for ImXXX functions)
 	struct imgui_t
@@ -56,6 +58,8 @@ private:
 
 		int itemId = 0;
 		int focusedId = -1;
+		bool skipNextAdvancePen = false;
+		float maxPenX = 0.f;
 		
 		unsigned int palette[IM_PAL_SIZE];
 
