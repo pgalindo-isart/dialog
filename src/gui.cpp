@@ -75,6 +75,8 @@ void Gui::ImAdvancePen()
 
 void Gui::ImNewFrame(im_io_t io)
 {
+    // Reinit values that can be changed 
+    imState.itemWidth = 200.f;
     imState.maxPenX = f32_max(imState.maxPenX, imState.penX);
     imState.penY += imState.itemHeight + imState.itemSpacing;
 

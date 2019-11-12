@@ -52,7 +52,7 @@ private:
 		float beginY;
 
         int itemCount = 0;
-		float itemWidth = 200.f;
+		float itemWidth;
 		float itemHeight = 22.f;
 		float itemSpacing = 3.f;
 		float textOffsetY = 15.f;
