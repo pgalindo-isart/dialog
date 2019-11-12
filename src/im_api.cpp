@@ -40,10 +40,10 @@ void im_setPalette(const unsigned int* palette)
     g_gui->ImSetPalette(palette);
 }
 
-void im_setItemWidth(float itemWidth)
+float im_setItemWidth(float itemWidth)
 {
     assert(im_valid());
-    g_gui->ImSetItemWidth(itemWidth);
+    return g_gui->ImSetItemWidth(itemWidth);
 }
 
 void im_sameLine(float spacing)
@@ -67,10 +67,22 @@ void im_text_v(const char* format, va_list args)
     g_gui->ImTextV(format, args);
 }
 
-void im_sliderFloat(const char* text, float* value, float min, float max)
+bool im_sliderFloat(const char* text, float* value, float min, float max)
 {
     assert(im_valid());
-    g_gui->ImSliderFloat(text, value, min, max);
+    return g_gui->ImSliderFloat(text, value, min, max);
+}
+
+bool im_sliderFloat3(const char* text, float* values, float min, float max)
+{
+    assert(im_valid());
+    return g_gui->ImSliderFloat3(text, values, min, max);
+}
+
+bool im_sliderFloat4(const char* text, float* values, float min, float max)
+{
+    assert(im_valid());
+    return g_gui->ImSliderFloat4(text, values, min, max);
 }
 
 bool im_checkbox(const char* text, bool* value)

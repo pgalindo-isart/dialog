@@ -16,11 +16,13 @@ public:
 	// Immediate gui functions starts with Im prefix
 	void ImNewFrame(im_io_t io);
 	void ImSetPalette(const unsigned int* palette);
-	void ImSetItemWidth(float width);
+	float ImSetItemWidth(float width);
 	void ImSameLine(float spacing = -1.f);
 	void ImText(const char* format, ...);
 	void ImTextV(const char* format, va_list args);
 	bool ImSliderFloat(const char* text, float* value, float min, float max);
+	bool ImSliderFloat3(const char* text, float* values, float min, float max);
+	bool ImSliderFloat4(const char* text, float* values, float min, float max);
 	bool ImCheckBox(const char* text, bool* value);
 	bool ImButton(const char* text);
 

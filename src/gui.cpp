@@ -104,9 +104,11 @@ void Gui::ImSetPalette(const unsigned int* pal)
     memcpy(imState.palette, pal, IM_PAL_SIZE * sizeof(unsigned int));
 }
 
-void Gui::ImSetItemWidth(float itemWidth)
+float Gui::ImSetItemWidth(float itemWidth)
 {
+    float oldItemWidth = imState.itemWidth;
     imState.itemWidth = itemWidth;
+    return oldItemWidth;
 }
 
 void Gui::ImSameLine(float spacing)
@@ -207,6 +209,44 @@ bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
     imState.itemCount++;
     imState.itemId++;
 
+    return changed;
+}
+
+bool Gui::ImSliderFloat4(const char* text, float* values, float min, float max)
+{
+    float oldItemWidth = imState.itemWidth;
+    
+    imState.itemWidth = (int)((imState.itemWidth / 4) - 1 * imState.itemSpacing);
+
+    bool changed = false;
+
+    changed |= this->ImSliderFloat("x", &values[0], min, max);
+    this->ImSameLine();
+    changed |= this->ImSliderFloat("y", &values[1], min, max);
+    this->ImSameLine();
+    changed |= this->ImSliderFloat("z", &values[2], min, max);
+    this->ImSameLine();
+    changed |= this->ImSliderFloat("w", &values[3], 0.f, 1.f);
+
+    imState.itemWidth = oldItemWidth;
+    return changed;
+}
+
+bool Gui::ImSliderFloat3(const char* text, float* values, float min, float max)
+{
+    float oldItemWidth = imState.itemWidth;
+    
+    imState.itemWidth = (int)((imState.itemWidth / 3) - 1 * imState.itemSpacing);
+
+    bool changed = false;
+
+    changed |= this->ImSliderFloat("x", &values[0], min, max);
+    this->ImSameLine();
+    changed |= this->ImSliderFloat("y", &values[1], min, max);
+    this->ImSameLine();
+    changed |= this->ImSliderFloat("z", &values[2], min, max);
+
+    imState.itemWidth = oldItemWidth;
     return changed;
 }
 
