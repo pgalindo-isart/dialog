@@ -67,6 +67,12 @@ void im_text_v(const char* format, va_list args)
     g_gui->ImTextV(format, args);
 }
 
+bool im_sliderInt(const char* text, int* value, int min, int max)
+{
+    assert(im_valid());
+    return g_gui->ImSliderInt(text, value, min, max);
+}
+
 bool im_sliderFloat(const char* text, float* value, float min, float max)
 {
     assert(im_valid());

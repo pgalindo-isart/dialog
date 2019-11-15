@@ -1,6 +1,10 @@
 #pragma once
 
-#include "glad/glad.h"
+#ifdef __EMSCRIPTEN__
+#include <GL/gl.h>
+#else
+#include <glad/glad.h>
+#endif
 
 #include "renderer.hpp"
 

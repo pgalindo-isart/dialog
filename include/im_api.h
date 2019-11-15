@@ -36,6 +36,7 @@ float im_setItemWidth(float itemWidth);
 void im_sameLine(float spacing = -1.f);
 void im_text(const char* format, ...);
 void im_text_v(const char* format, va_list args);
+bool im_sliderInt(const char* text, int* value, int min, int max);
 bool im_sliderFloat(const char* text, float* value, float min, float max);
 bool im_sliderFloat3(const char* text, float* values, float min, float max);
 bool im_sliderFloat4(const char* text, float* values, float min, float max);

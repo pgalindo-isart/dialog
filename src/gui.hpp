@@ -20,6 +20,7 @@ public:
 	void ImSameLine(float spacing = -1.f);
 	void ImText(const char* format, ...);
 	void ImTextV(const char* format, va_list args);
+	bool ImSliderInt(const char* text, int* value, int min, int max);
 	bool ImSliderFloat(const char* text, float* value, float min, float max);
 	bool ImSliderFloat3(const char* text, float* values, float min, float max);
 	bool ImSliderFloat4(const char* text, float* values, float min, float max);

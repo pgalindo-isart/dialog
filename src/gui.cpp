@@ -145,6 +145,76 @@ void Gui::ImTextV(const char* format, va_list args)
     imState.itemId++;
 }
 
+bool Gui::ImSliderInt(const char* text, int* value, int min, int max)
+{
+    // TODO: Refactor and share code with sliderFloat
+    ImAdvancePen();
+
+    bool changed = false;
+
+    // Background dimensions
+    rect_t bg;
+    bg.x = imState.penX;
+    bg.y = imState.penY;
+    bg.w = imState.itemWidth;
+    bg.h = imState.itemHeight;
+
+    bool hovered = ImMouseInside(bg);
+
+    // Cursor dimensions
+    float cursor_margin = 3.f;
+    float cursor_width = 10.f;
+
+    // If mouse is pressed inside, value will change
+    float ratio;
+    if (imState.focusedId == -1 && ImMouseJustPressed() && hovered)
+    {
+        imState.focusedId = imState.itemId;
+    }
+    else if (imState.focusedId == imState.itemId && ImMouseJustReleased())
+    {
+        imState.focusedId = -1;
+    }
+
+    bool focused = imState.focusedId == imState.itemId;
+    if (focused)
+    {
+        float cursor_center_x_left  = bg.x + cursor_margin + cursor_width / 2.f;
+        float cursor_center_x_right = bg.x + bg.w - cursor_margin - cursor_width / 2.f;
+
+        //ratio = f32_clamp(f32_invLerp(cursor_center_x_left, cursor_center_x_right, imState.io.mousePos.x), 0.f, 1.f);
+        ratio = f32_linearRemap(cursor_center_x_left, cursor_center_x_right, imState.io.mousePos[0], 0.f, 1.f, true);
+        *value = std::round(f32_lerp(min, max, ratio));
+        changed = true;
+    }
+    else
+    {
+        ratio = f32_clamp((*value - min) / (float)(max - min), 0.f, 1.f);
+    }
+
+    // Draw bg
+    this->DrawFilledRect(bg, imState.palette[IM_PAL_ITEM_BG]);
+
+    // Draw cursor
+    rect_t cursor;
+    cursor.x = f32_lerp(bg.x + cursor_margin, bg.x + bg.w - cursor_margin - cursor_width, ratio);
+    cursor.y = bg.y + 1 * cursor_margin;
+    cursor.h = bg.h - 2 * cursor_margin;
+    cursor.w = cursor_width;
+    this->DrawFilledRect(cursor, imState.palette[focused ? IM_PAL_ITEM_CURSOR_HIGHLIGHT : (hovered ? IM_PAL_ITEM_CURSOR_HOVER : IM_PAL_ITEM_CURSOR)]);
+
+    // Draw number text
+    char valueStr[255];
+    sprintf(valueStr, "%s: %d", text, *value);
+    this->DrawText(debugFont, valueStr, imState.penX + 6.f, imState.penY + imState.textOffsetY);
+
+    imState.penX += bg.w;
+    imState.itemCount++;
+    imState.itemId++;
+
+    return changed;
+}
+
 bool Gui::ImSliderFloat(const char* text, float* value, float min, float max)
 {
     ImAdvancePen();
