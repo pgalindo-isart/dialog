@@ -1,9 +1,9 @@
 MAKEFLAGS+=--no-builtin-rules --no-builtin-variables
 
-CXXFLAGS=-O0 -g -Wall -MMD -Wno-unused-function
+CXXFLAGS=-O3 -Wall -MMD -Wno-unused-function
 CXXFLAGS+=-Iinclude
 #CXXFLAGS+=-std=c++11 -s WASM=0 -s ASSERTIONS=2 -s USE_GLFW=3 -s LEGACY_GL_EMULATION=1 -s GL_UNSAFE_OPTS=0
-CXX=g++
+CXX?=g++
 AR=ar
 ARFLAGS=rcs
 
@@ -40,7 +40,7 @@ dialog_sfml: $(COMMON_OBJS) $(SFML_OBJS) src/dialog.o
 
 # SDL version
 dialog_sdl: CXXFLAGS+=-DPLATFORM_SDL
-dialog_sdl: private LDLIBS+=-lSDL2
+dialog_sdl: private LDLIBS+=-lmingw32 -lSDL2main -lSDL2
 dialog_sdl: $(COMMON_OBJS) $(SDL_OBJS) src/dialog.o
 	$(CXX) -o $@ $(LDFLAGS) $^ $(LDLIBS)
 

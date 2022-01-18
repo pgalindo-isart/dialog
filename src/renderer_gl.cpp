@@ -41,7 +41,7 @@ void RendererGL::RenderTexture(TextureId texture, irect_t srcRect, rect_t dstRec
     glBindTexture(GL_TEXTURE_2D, tex.texture);
     glBegin(GL_QUADS);
 
-    //glColor4f(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f);
+    glColor4f(color.r / 255.f, color.g / 255.f, color.b / 255.f, color.a / 255.f);
     
     glTexCoord2f(srcRect.x / (float)tex.width, srcRect.y / (float)tex.height);
     glVertex3f(dstRect.x, dstRect.y, 0.f);
